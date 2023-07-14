@@ -18,7 +18,8 @@ PROGRAM = $(OUTPUT_FOLDER)/trivia_tests
 
 INCLUDES = \
     -I $(realpath ../..)/include \
-    -I/opt/homebrew/include
+    -I $(realpath ..)/include \
+    -I /opt/homebrew/include
 
 SRC_DIR = \
 	$(realpath ../..)/src
