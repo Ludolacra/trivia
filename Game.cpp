@@ -1,4 +1,4 @@
-﻿#include "Game.h"
+﻿#include "Game.hpp"
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
