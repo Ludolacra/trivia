@@ -9,15 +9,17 @@ OUT = $(OUTPUT_FOLDER)/trivia
 TEST_OUT = $(OUTPUT_FOLDER)/trivia_tests
 
 # Source definitions
-SOURCE_FILES = GameRunner.cpp Game.cpp
-FILES = $(SOURCE_FILES) Game.hpp
-TEST_FILES = Game.cpp Game.hpp
+SOURCE_FILES = src/GameRunner.cpp src/Game.cpp
+FILES = $(SOURCE_FILES)
+TEST_FILES = Game.cpp 
 
+INCLUDES = \
+	-I $(realpath .)/include
 
 OBJS = \
-   $(SOURCE_FILES:.cpp=.o)
+    $(SOURCE_FILES:.cpp=.o)
 
-OBJECTS = $(addprefix $(OUTPUT_FOLDER)/, $(OBJS))
+OBJECTS = $(subst src/,$(OUTPUT_FOLDER)/,$(OBJS))
 
 .PHONY: .outputFolder build clean tests
 .INTERMEDIATE: .outputFolder
@@ -30,13 +32,14 @@ tests: test runTest
 
 .outputFolder:
 	mkdir -p $(OUTPUT_FOLDER)
+	@echo $(OBJECTS)
 
 build: .outputFolder $(OBJECTS)
 	$(CC) $(OBJECTS) $(OUTOPTS) $(OUT)
 
-$(OUTPUT_FOLDER)/%.o: %.cpp 
+$(OUTPUT_FOLDER)/%.o: src/%.cpp 
 	@echo "Compiling $^"
-	$(CC) $(OPTS) -c $^ -o $@
+	$(CC) $(OPTS) $(INCLUDES) -c $^ -o $@
 
 run: build
 	./$(OUT)
