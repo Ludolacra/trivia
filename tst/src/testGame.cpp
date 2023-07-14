@@ -20,6 +20,7 @@ namespace UT
         }
         void TearDown()
         {
+            testedObject.reset();
         }
     };
 

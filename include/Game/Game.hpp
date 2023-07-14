@@ -9,7 +9,7 @@ class Game
 {
 public:
     Game();
-    std::string createRockQuestion( int index );
+    ~Game();
     bool isPlayable();
     bool add( std::string playerName );
 

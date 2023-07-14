@@ -3,7 +3,7 @@ CXX_FLAGS = \
     -std=c++17 \
     -Wall \
     -Wextra \
-    # -Werror
+    -Werror
 
 LD = g++
 LD_FLAGS = \

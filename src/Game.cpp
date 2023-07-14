@@ -9,31 +9,23 @@ using namespace std;
 Game::Game() :
     places(), purses(), currentPlayer( 0 )
 {
+    static constexpr const std::string_view popQuestionPrefix     = "Pop Question ";
+    static constexpr const std::string_view scienceQuestionPrefix = "Science Question ";
+    static constexpr const std::string_view sportsQuestionPrefix  = "Sports Question ";
+    static constexpr const std::string_view rockQuestionPrefix    = "Rock Question ";
     for( int i = 0; i < 50; i++ )
     {
-        ostringstream oss( ostringstream::out );
-        oss << "Pop Question " << i;
-
-        popQuestions.push_back( oss.str() );
-
-        char str[255];
-        sprintf( str, "Science Question %d", i );
-        scienceQuestions.push_back( str );
-
-        char str1[255];
-        sprintf( str1, "Sports Question %d", i );
-        sportsQuestions.push_back( str1 );
-
-        rockQuestions.push_back( createRockQuestion( i ) );
+        popQuestions.push_back( std::string( popQuestionPrefix ) + std::to_string( i ) );
+        scienceQuestions.push_back( std::string( scienceQuestionPrefix ) + std::to_string( i ) );
+        sportsQuestions.push_back( std::string( sportsQuestionPrefix ) + std::to_string( i ) );
+        rockQuestions.push_back( std::string( rockQuestionPrefix ) + std::to_string( i ) );
     }
 }
 
-string Game::createRockQuestion( int index )
+Game::~Game()
 {
-    char indexStr[127];
-    sprintf( indexStr, "Rock Question %d", index );
-    return indexStr;
 }
+
 
 bool Game::isPlayable()
 {
