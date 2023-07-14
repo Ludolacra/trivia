@@ -1,0 +1,22 @@
+BasedOnStyle: WebKit
+AlignAfterOpenBracket: Align
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: false
+AlignConsecutiveMacros: true
+AlignEscapedNewlines: DontAlign
+AllowShortCaseLabelsOnASingleLine: true
+BreakBeforeBinaryOperators: None
+BreakBeforeBraces: Allman
+BreakConstructorInitializers: AfterColon
+# ColumnSize: 120 -- breaks a lot of things, but it's the recommended max length
+IndentCaseLabels: true
+IndentWidth: 4
+MaxEmptyLinesToKeep: 2
+NamespaceIndentation: All
+SortIncludes: false
+SpaceAfterTemplateKeyword: false
+SpaceBeforeInheritanceColon: true
+SpaceBeforeParens: Never
+SpaceInEmptyBlock: false
+SpacesInParentheses: true
+Standard: c++17

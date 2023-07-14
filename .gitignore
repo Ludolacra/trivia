@@ -2,3 +2,5 @@ Debug
 .project
 .cproject
 out/
+
+.DS_Store
