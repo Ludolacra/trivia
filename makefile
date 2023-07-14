@@ -1,10 +1,26 @@
-FILES = GameRunner.cpp Game.cpp Game.hpp
-TEST_FILES = Game.cpp Game.hpp
+# Compiler options
 CC = g++
-OPTS = -std=c++17 -Wall -Wextra -Werror
-OUTOPTS = -o 
-OUT = out/trivia
-TEST_OUT = out/trivia_tests
+OPTS = -std=c++17 -Wall -Wextra # -Werror
+
+# Output options
+OUTOPTS = -o
+OUTPUT_FOLDER = out
+OUT = $(OUTPUT_FOLDER)/trivia
+TEST_OUT = $(OUTPUT_FOLDER)/trivia_tests
+
+# Source definitions
+SOURCE_FILES = GameRunner.cpp Game.cpp
+FILES = $(SOURCE_FILES) Game.hpp
+TEST_FILES = Game.cpp Game.hpp
+
+
+OBJS = \
+   $(SOURCE_FILES:.cpp=.o)
+
+OBJECTS = $(addprefix $(OUTPUT_FOLDER)/, $(OBJS))
+
+.PHONY: .outputFolder build clean tests
+.INTERMEDIATE: .outputFolder
 
 all: prod 
 
@@ -13,12 +29,16 @@ prod: build run
 tests: test runTest
 
 .outputFolder:
-	mkdir -p out
+	mkdir -p $(OUTPUT_FOLDER)
 
-build: .outputFolder
-	$(CC) $(FILES) $(OPTS) $(OUTOPTS) $(OUT)
+build: .outputFolder $(OBJECTS)
+	$(CC) $(OBJECTS) $(OUTOPTS) $(OUT)
 
-run: 
+$(OUTPUT_FOLDER)/%.o: %.cpp 
+	@echo "Compiling $^"
+	$(CC) $(OPTS) -c $^ -o $@
+
+run: build
 	./$(OUT)
 
 test: .outputFolder
@@ -28,4 +48,4 @@ runTest:
 	./$(TEST_OUT)
 
 clean: 
-	rm -rf out/
+	rm -rf $(OUTPUT_FOLDER)/
