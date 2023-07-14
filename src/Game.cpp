@@ -6,20 +6,15 @@
 
 using namespace std;
 
-Game::Game() :
+Game::Game( std::shared_ptr<Abstract::QuestionFactory> questionFactory ) :
     places(), purses(), currentPlayer( 0 )
 {
-    static constexpr const std::string_view popQuestionPrefix     = "Pop Question ";
-    static constexpr const std::string_view scienceQuestionPrefix = "Science Question ";
-    static constexpr const std::string_view sportsQuestionPrefix  = "Sports Question ";
-    static constexpr const std::string_view rockQuestionPrefix    = "Rock Question ";
-    for( int i = 0; i < 50; i++ )
-    {
-        popQuestions.push_back( std::string( popQuestionPrefix ) + std::to_string( i ) );
-        scienceQuestions.push_back( std::string( scienceQuestionPrefix ) + std::to_string( i ) );
-        sportsQuestions.push_back( std::string( sportsQuestionPrefix ) + std::to_string( i ) );
-        rockQuestions.push_back( std::string( rockQuestionPrefix ) + std::to_string( i ) );
-    }
+    constexpr const unsigned int questionsPerTopic = 50;
+
+    popQuestions     = questionFactory->generateQuestions( Abstract::QuestionFactory::Topic::Pop, questionsPerTopic );
+    scienceQuestions = questionFactory->generateQuestions( Abstract::QuestionFactory::Topic::Science, questionsPerTopic );
+    sportsQuestions  = questionFactory->generateQuestions( Abstract::QuestionFactory::Topic::Sports, questionsPerTopic );
+    rockQuestions    = questionFactory->generateQuestions( Abstract::QuestionFactory::Topic::Rock, questionsPerTopic );
 }
 
 Game::~Game()

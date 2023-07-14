@@ -4,11 +4,15 @@
 #include <string>
 #include <list>
 #include <vector>
+#include <memory>
+
+#include "Abstract/QuestionFactory.hpp"
+#include "Generative/QuestionFactory.hpp"
 
 class Game
 {
 public:
-    Game();
+    Game( std::shared_ptr<Abstract::QuestionFactory> questionFactory = std::make_shared<Generative::QuestionFactory>() );
     ~Game();
     bool isPlayable();
     bool add( std::string playerName );

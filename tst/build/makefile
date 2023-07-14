@@ -34,6 +34,10 @@ LD_LIBRARIES += \
     -lgmock -lgtest \
     -L$(OUTPUT_FOLDER) -lUT_trivia
 
+LD_FLAGS += \
+	$(if $(filter 1, $(SANITIZERS)),-fsanitize=address -fsanitize=undefined,)\
+	$(if $(filter 1, $(COVERAGE)),--coverage,)
+
 TST_FILES = \
 	$(wildcard $(TST_DIR)/*.cpp)
 
