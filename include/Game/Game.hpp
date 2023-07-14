@@ -7,6 +7,17 @@
 
 class Game
 {
+public:
+    Game();
+    std::string createRockQuestion( int index );
+    bool isPlayable();
+    bool add( std::string playerName );
+
+    int howManyPlayers();
+    void roll( int roll );
+
+    bool wasCorrectlyAnswered();
+    bool wrongAnswer();
 
 private:
     std::vector<std::string> players;
@@ -24,24 +35,8 @@ private:
     unsigned int currentPlayer;
     bool isGettingOutOfPenaltyBox;
 
-public:
-    Game();
-    std::string createRockQuestion( int index );
-    bool isPlayable();
-    bool add( std::string playerName );
-
-    int howManyPlayers();
-    void roll( int roll );
-
-private:
     void askQuestion();
     std::string currentCategory();
-
-public:
-    bool wasCorrectlyAnswered();
-    bool wrongAnswer();
-
-private:
     bool didPlayerWin();
 };
 
