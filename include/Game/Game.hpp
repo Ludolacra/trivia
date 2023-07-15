@@ -35,7 +35,6 @@ private:
     bool inPenaltyBox[6];
 
     unsigned int currentPlayer;
-    bool isGettingOutOfPenaltyBox;
 
     void askQuestion();
     Topic currentCategory( const unsigned short location );

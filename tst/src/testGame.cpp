@@ -250,7 +250,6 @@ namespace UT
         ASSERT_EQ( testedObject->places[0], 0 );
         ASSERT_EQ( testedObject->purses[0], 0 );
         ASSERT_EQ( testedObject->inPenaltyBox[0], true );
-        ASSERT_EQ( testedObject->isGettingOutOfPenaltyBox, false );
     }
 
     TEST_F( GameTurnTest, playerIsRemovedFromPenaltyAndHasRegularTurnOnOddRoll )
@@ -262,7 +261,6 @@ namespace UT
 
         ASSERT_EQ( testedObject->places[0], 3 );
         ASSERT_EQ( testedObject->purses[0], 0 );
-        ASSERT_EQ( testedObject->inPenaltyBox[0], true );
-        ASSERT_EQ( testedObject->isGettingOutOfPenaltyBox, true );
+        ASSERT_EQ( testedObject->inPenaltyBox[0], false );
     }
 }

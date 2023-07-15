@@ -52,7 +52,7 @@ void Game::roll( int roll )
     {
         if( roll % 2 != 0 )
         {
-            isGettingOutOfPenaltyBox = true;
+            inPenaltyBox[currentPlayer] = false;
 
             std::cout << players[currentPlayer] << " is getting out of the penalty box" << std::endl;
             places[currentPlayer] = places[currentPlayer] + roll;
@@ -66,7 +66,6 @@ void Game::roll( int roll )
         else
         {
             std::cout << players[currentPlayer] << " is not getting out of the penalty box" << std::endl;
-            isGettingOutOfPenaltyBox = false;
         }
     }
     else
@@ -105,33 +104,14 @@ bool Game::wasCorrectlyAnswered()
 {
     if( inPenaltyBox[currentPlayer] )
     {
-        if( isGettingOutOfPenaltyBox )
-        {
-            std::cout << "Answer was correct!!!!" << std::endl;
-            purses[currentPlayer]++;
-            std::cout << players[currentPlayer]
-                      << " now has "
-                      << purses[currentPlayer]
-                      << " Gold Coins." << std::endl;
-
-            bool winner = didPlayerWin();
-            currentPlayer++;
-            if( currentPlayer == players.size() )
-                currentPlayer = 0;
-
-            return winner;
-        }
-        else
-        {
-            currentPlayer++;
-            if( currentPlayer == players.size() )
-                currentPlayer = 0;
-            return true;
-        }
+        currentPlayer++;
+        if( currentPlayer == players.size() )
+            currentPlayer = 0;
+        return true;
     }
     else
     {
-        std::cout << "Answer was corrent!!!!" << std::endl;
+        std::cout << "Answer was correct!!!!" << std::endl;
         purses[currentPlayer]++;
         std::cout << players[currentPlayer]
                   << " now has "
