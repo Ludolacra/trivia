@@ -4,6 +4,7 @@
 #include <gmock/gmock.h>
 
 #include "Abstract/QuestionFactory.hpp"
+#include "Game/Topic.hpp"
 
 namespace UT
 {
@@ -12,7 +13,7 @@ namespace UT
         class QuestionFactory : public ::Abstract::QuestionFactory
         {
         public:
-            MOCK_CONST_METHOD2( generateQuestions, std::list<std::string>( const Abstract::QuestionFactory::Topic, const unsigned int ) );
+            MOCK_CONST_METHOD2( generateQuestions, std::list<std::string>( const Topic, const unsigned int ) );
         };
     }
 }

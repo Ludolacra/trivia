@@ -10,7 +10,7 @@ namespace Generative
     {
     }
 
-    std::list<std::string> QuestionFactory::generateQuestions( const Abstract::QuestionFactory::Topic topic, const unsigned int numberOfQuestions ) const
+    std::list<std::string> QuestionFactory::generateQuestions( const Topic topic, const unsigned int numberOfQuestions ) const
     {
         (void)topic;
         (void)numberOfQuestions;
@@ -23,7 +23,7 @@ namespace Generative
         return result;
     }
 
-    constexpr std::string_view QuestionFactory::topicToString( const Abstract::QuestionFactory::Topic topic ) const
+    constexpr std::string_view QuestionFactory::topicToString( const Topic topic ) const
     {
 #define CASE( X ) \
     case Topic::X: return #X

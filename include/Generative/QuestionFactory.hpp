@@ -5,6 +5,7 @@
 #include <string>
 
 #include "Abstract/QuestionFactory.hpp"
+#include "Game/Topic.hpp"
 
 namespace Generative
 {

@@ -1,8 +1,11 @@
 ﻿#include "Game/Game.hpp"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
 #include <sstream>
+
+#include "Game/Topic.hpp"
 
 using namespace std;
 
@@ -11,10 +14,10 @@ Game::Game( std::shared_ptr<Abstract::QuestionFactory> questionFactory ) :
 {
     constexpr const unsigned int questionsPerTopic = 50;
 
-    popQuestions     = questionFactory->generateQuestions( Abstract::QuestionFactory::Topic::Pop, questionsPerTopic );
-    scienceQuestions = questionFactory->generateQuestions( Abstract::QuestionFactory::Topic::Science, questionsPerTopic );
-    sportsQuestions  = questionFactory->generateQuestions( Abstract::QuestionFactory::Topic::Sports, questionsPerTopic );
-    rockQuestions    = questionFactory->generateQuestions( Abstract::QuestionFactory::Topic::Rock, questionsPerTopic );
+    popQuestions     = questionFactory->generateQuestions( Topic::Pop, questionsPerTopic );
+    scienceQuestions = questionFactory->generateQuestions( Topic::Science, questionsPerTopic );
+    sportsQuestions  = questionFactory->generateQuestions( Topic::Sports, questionsPerTopic );
+    rockQuestions    = questionFactory->generateQuestions( Topic::Rock, questionsPerTopic );
 }
 
 Game::~Game()

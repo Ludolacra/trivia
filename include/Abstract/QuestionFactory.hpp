@@ -4,19 +4,13 @@
 #include <list>
 #include <string>
 
+#include "Game/Topic.hpp"
+
 namespace Abstract
 {
     class QuestionFactory
     {
     public:
-        enum class Topic
-        {
-            Pop = 0,
-            Science,
-            Sports,
-            Rock
-        };
-
         QuestionFactory();
         virtual ~QuestionFactory();
 
