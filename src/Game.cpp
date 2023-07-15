@@ -21,7 +21,6 @@ Game::~Game()
 {
 }
 
-
 bool Game::isPlayable()
 {
     return ( howManyPlayers() >= 2 );
@@ -160,7 +159,6 @@ bool Game::wrongAnswer()
         currentPlayer = 0;
     return true;
 }
-
 
 bool Game::didPlayerWin()
 {

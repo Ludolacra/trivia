@@ -35,7 +35,9 @@ run: build
 	./$(PROGRAM)
 
 tests:
-	$(MAKE) -C ../tst/build
+	$(MAKE) -C ../tst/build COVERAGE=1
+	$(RM) -rf coverage && mkdir -p coverage
+	gcovr --exclude '.*/tst/.*' --html-details coverage/index.html --print-summary --root ..
 
 $(OUTPUT_FOLDER)/%.o: %.cpp
 	$(CXX) $(CXX_FLAGS) $(INCLUDES) -c $^ -o $@

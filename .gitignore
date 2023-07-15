@@ -2,5 +2,6 @@ Debug
 .project
 .cproject
 out/
+build/coverage
 
 .DS_Store
