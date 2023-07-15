@@ -8,6 +8,7 @@
 
 #include "Abstract/QuestionFactory.hpp"
 #include "Generative/QuestionFactory.hpp"
+#include "Game/Topic.hpp"
 
 class Game
 {
@@ -40,7 +41,7 @@ private:
     bool isGettingOutOfPenaltyBox;
 
     void askQuestion();
-    std::string currentCategory( const unsigned short location );
+    Topic currentCategory( const unsigned short location );
     bool didPlayerWin();
 };
 

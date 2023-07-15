@@ -1,9 +1,7 @@
 ﻿#include "Game/Game.hpp"
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
-#include <sstream>
 
 #include "Game/Topic.hpp"
 
@@ -64,7 +62,7 @@ void Game::roll( int roll )
                 places[currentPlayer] = places[currentPlayer] - 12;
 
             cout << players[currentPlayer] << "'s new location is " << places[currentPlayer] << endl;
-            cout << "The category is " << currentCategory( places[currentPlayer] ) << endl;
+            cout << "The category is " << to_string( currentCategory( places[currentPlayer] ) ) << endl;
             askQuestion();
         }
         else
@@ -81,46 +79,45 @@ void Game::roll( int roll )
             places[currentPlayer] = places[currentPlayer] - 12;
 
         cout << players[currentPlayer] << "'s new location is " << places[currentPlayer] << endl;
-        cout << "The category is " << currentCategory( places[currentPlayer] ) << endl;
+        cout << "The category is " << to_string( currentCategory( places[currentPlayer] ) ) << endl;
         askQuestion();
     }
 }
 
 void Game::askQuestion()
 {
-    const std::string currCategory = currentCategory( places[currentPlayer] );
-    if( currCategory == "Pop" )
+    switch( currentCategory( places[currentPlayer] ) )
     {
-        cout << popQuestions.front() << endl;
-        popQuestions.pop_front();
-    }
-    else if( currCategory == "Science" )
-    {
-        cout << scienceQuestions.front() << endl;
-        scienceQuestions.pop_front();
-    }
-    else if( currCategory == "Sports" )
-    {
-        cout << sportsQuestions.front() << endl;
-        sportsQuestions.pop_front();
-    }
-    else if( currCategory == "Rock" )
-    {
-        cout << rockQuestions.front() << endl;
-        rockQuestions.pop_front();
+        case Topic::Pop:
+            cout << popQuestions.front() << endl;
+            popQuestions.pop_front();
+            break;
+        case Topic::Science:
+            cout << scienceQuestions.front() << endl;
+            scienceQuestions.pop_front();
+            break;
+        case Topic::Sports:
+            cout << sportsQuestions.front() << endl;
+            sportsQuestions.pop_front();
+            break;
+        case Topic::Rock:
+            cout << rockQuestions.front() << endl;
+            rockQuestions.pop_front();
+            break;
+        default:
+            break;
     }
 }
 
-
-string Game::currentCategory( const unsigned short location )
+Topic Game::currentCategory( const unsigned short location )
 {
     constexpr const unsigned short categoryCount = 4;
     switch( location % categoryCount )
     {
-        case 0: return "Pop";
-        case 1: return "Science";
-        case 2: return "Sports";
-        default: return "Rock";
+        case 0: return Topic::Pop;
+        case 1: return Topic::Science;
+        case 2: return Topic::Sports;
+        default: return Topic::Rock;
     }
 }
 

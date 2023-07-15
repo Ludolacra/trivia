@@ -50,16 +50,16 @@ namespace UT
             switch( i % categoryCount )
             {
                 case 0:
-                    ASSERT_EQ( "Pop", testedObject->currentCategory( i ) );
+                    ASSERT_EQ( Topic::Pop, testedObject->currentCategory( i ) );
                     break;
                 case 1:
-                    ASSERT_EQ( "Science", testedObject->currentCategory( i ) );
+                    ASSERT_EQ( Topic::Science, testedObject->currentCategory( i ) );
                     break;
                 case 2:
-                    ASSERT_EQ( "Sports", testedObject->currentCategory( i ) );
+                    ASSERT_EQ( Topic::Sports, testedObject->currentCategory( i ) );
                     break;
                 case 3:
-                    ASSERT_EQ( "Rock", testedObject->currentCategory( i ) );
+                    ASSERT_EQ( Topic::Rock, testedObject->currentCategory( i ) );
                     break;
             }
         }
