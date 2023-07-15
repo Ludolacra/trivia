@@ -240,6 +240,19 @@ namespace UT
         ASSERT_EQ( testedObject->inPenaltyBox[0], false );
     }
 
+    TEST_F( GameTurnTest, playerIsMovedByRollValueAndValuesOverBoardSizeAreHandled )
+    {
+        testedObject->places[0] = 8;
+        testing::internal::CaptureStdout();
+        testedObject->roll( 6 );
+        testing::internal::GetCapturedStdout();
+
+        ASSERT_EQ( testedObject->places[0], 2 );
+        ASSERT_EQ( testedObject->purses[0], 0 );
+        ASSERT_EQ( testedObject->inPenaltyBox[0], false );
+    }
+
+
     TEST_F( GameTurnTest, playerStaysInPenaltyOnEvenRoll )
     {
         testedObject->inPenaltyBox[0] = true;
@@ -261,6 +274,68 @@ namespace UT
 
         ASSERT_EQ( testedObject->places[0], 3 );
         ASSERT_EQ( testedObject->purses[0], 0 );
+        ASSERT_EQ( testedObject->inPenaltyBox[0], false );
+    }
+
+    class GameAnswerTest : public GameTurnTest
+    {
+    };
+
+    TEST_F( GameAnswerTest, correctAnswerGivesReward )
+    {
+        testing::internal::CaptureStdout();
+        testedObject->wasCorrectlyAnswered();
+        testing::internal::GetCapturedStdout();
+
+        ASSERT_EQ( testedObject->places[0], 0 );
+        ASSERT_EQ( testedObject->purses[0], 1 );
+        ASSERT_EQ( testedObject->inPenaltyBox[0], false );
+    }
+
+    TEST_F( GameAnswerTest, correctAnswerGivesNoRewardWhenPenalized )
+    {
+        testedObject->inPenaltyBox[0] = true;
+        testing::internal::CaptureStdout();
+        testedObject->wasCorrectlyAnswered();
+        testing::internal::GetCapturedStdout();
+
+        ASSERT_EQ( testedObject->places[0], 0 );
+        ASSERT_EQ( testedObject->purses[0], 0 );
+        ASSERT_EQ( testedObject->inPenaltyBox[0], true );
+    }
+
+    TEST_F( GameAnswerTest, wrongAnswerPenalizesPlayer )
+    {
+        testedObject->inPenaltyBox[0] = false;
+        testing::internal::CaptureStdout();
+        testedObject->wrongAnswer();
+        testing::internal::GetCapturedStdout();
+
+        ASSERT_EQ( testedObject->places[0], 0 );
+        ASSERT_EQ( testedObject->purses[0], 0 );
+        ASSERT_EQ( testedObject->inPenaltyBox[0], true );
+    }
+
+    TEST_F( GameAnswerTest, sixCoinsWinGame )
+    {
+        testedObject->purses[0] = 4;
+        testing::internal::CaptureStdout();
+        bool notWon = testedObject->wasCorrectlyAnswered();
+        ASSERT_TRUE( notWon );
+        testing::internal::GetCapturedStdout();
+
+        ASSERT_EQ( testedObject->places[0], 0 );
+        ASSERT_EQ( testedObject->purses[0], 5 );
+        ASSERT_EQ( testedObject->inPenaltyBox[0], false );
+
+
+        testing::internal::CaptureStdout();
+        notWon = testedObject->wasCorrectlyAnswered();
+        ASSERT_FALSE( notWon );
+        testing::internal::GetCapturedStdout();
+
+        ASSERT_EQ( testedObject->places[0], 0 );
+        ASSERT_EQ( testedObject->purses[0], 6 );
         ASSERT_EQ( testedObject->inPenaltyBox[0], false );
     }
 }

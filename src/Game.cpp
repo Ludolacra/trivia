@@ -50,34 +50,23 @@ void Game::roll( int roll )
 
     if( inPenaltyBox[currentPlayer] )
     {
-        if( roll % 2 != 0 )
-        {
-            inPenaltyBox[currentPlayer] = false;
-
-            std::cout << players[currentPlayer] << " is getting out of the penalty box" << std::endl;
-            places[currentPlayer] = places[currentPlayer] + roll;
-            if( places[currentPlayer] > 11 )
-                places[currentPlayer] = places[currentPlayer] - 12;
-
-            std::cout << players[currentPlayer] << "'s new location is " << places[currentPlayer] << std::endl;
-            std::cout << "The category is " << to_string( currentCategory( places[currentPlayer] ) ) << std::endl;
-            askQuestion();
-        }
-        else
+        if( roll % 2 == 0 )
         {
             std::cout << players[currentPlayer] << " is not getting out of the penalty box" << std::endl;
+            return;
         }
-    }
-    else
-    {
-        places[currentPlayer] = places[currentPlayer] + roll;
-        if( places[currentPlayer] > 11 )
-            places[currentPlayer] = places[currentPlayer] - 12;
 
-        std::cout << players[currentPlayer] << "'s new location is " << places[currentPlayer] << std::endl;
-        std::cout << "The category is " << to_string( currentCategory( places[currentPlayer] ) ) << std::endl;
-        askQuestion();
+        std::cout << players[currentPlayer] << " is getting out of the penalty box" << std::endl;
+        inPenaltyBox[currentPlayer] = false;
     }
+
+    places[currentPlayer] = places[currentPlayer] + roll;
+    if( places[currentPlayer] > 11 )
+        places[currentPlayer] = places[currentPlayer] - 12;
+
+    std::cout << players[currentPlayer] << "'s new location is " << places[currentPlayer] << std::endl;
+    std::cout << "The category is " << to_string( currentCategory( places[currentPlayer] ) ) << std::endl;
+    askQuestion();
 }
 
 void Game::askQuestion()
@@ -107,24 +96,23 @@ bool Game::wasCorrectlyAnswered()
         currentPlayer++;
         if( currentPlayer == players.size() )
             currentPlayer = 0;
+
         return true;
     }
-    else
-    {
-        std::cout << "Answer was correct!!!!" << std::endl;
-        purses[currentPlayer]++;
-        std::cout << players[currentPlayer]
-                  << " now has "
-                  << purses[currentPlayer]
-                  << " Gold Coins." << std::endl;
 
-        bool winner = didPlayerWin();
-        currentPlayer++;
-        if( currentPlayer == players.size() )
-            currentPlayer = 0;
+    std::cout << "Answer was correct!!!!" << std::endl;
+    purses[currentPlayer]++;
+    std::cout << players[currentPlayer]
+              << " now has "
+              << purses[currentPlayer]
+              << " Gold Coins." << std::endl;
 
-        return winner;
-    }
+    bool winner = didPlayerWin();
+    currentPlayer++;
+    if( currentPlayer == players.size() )
+        currentPlayer = 0;
+
+    return winner;
 }
 
 bool Game::wrongAnswer()
