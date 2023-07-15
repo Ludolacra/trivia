@@ -64,7 +64,7 @@ void Game::roll( int roll )
                 places[currentPlayer] = places[currentPlayer] - 12;
 
             cout << players[currentPlayer] << "'s new location is " << places[currentPlayer] << endl;
-            cout << "The category is " << currentCategory() << endl;
+            cout << "The category is " << currentCategory( places[currentPlayer] ) << endl;
             askQuestion();
         }
         else
@@ -81,14 +81,14 @@ void Game::roll( int roll )
             places[currentPlayer] = places[currentPlayer] - 12;
 
         cout << players[currentPlayer] << "'s new location is " << places[currentPlayer] << endl;
-        cout << "The category is " << currentCategory() << endl;
+        cout << "The category is " << currentCategory( places[currentPlayer] ) << endl;
         askQuestion();
     }
 }
 
 void Game::askQuestion()
 {
-    const std::string currCategory = currentCategory();
+    const std::string currCategory = currentCategory( places[currentPlayer] );
     if( currCategory == "Pop" )
     {
         cout << popQuestions.front() << endl;
@@ -112,10 +112,10 @@ void Game::askQuestion()
 }
 
 
-string Game::currentCategory()
+string Game::currentCategory( const unsigned short location )
 {
     constexpr const unsigned short categoryCount = 4;
-    switch( places[currentPlayer] % categoryCount )
+    switch( location % categoryCount )
     {
         case 0: return "Pop";
         case 1: return "Science";

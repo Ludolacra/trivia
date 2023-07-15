@@ -44,27 +44,22 @@ namespace UT
     {
         testedObject = std::make_unique<Game>( questionFactoryMock );
 
-        testing::internal::CaptureStdout();
-        testedObject->add( "Bob" );
-        testing::internal::GetCapturedStdout();
-
         constexpr const unsigned short categoryCount = 4;
         for( unsigned short i = 0; i <= 11; ++i )
         {
-            testedObject->places[testedObject->currentPlayer] = i;
             switch( i % categoryCount )
             {
                 case 0:
-                    ASSERT_EQ( "Pop", testedObject->currentCategory() );
+                    ASSERT_EQ( "Pop", testedObject->currentCategory( i ) );
                     break;
                 case 1:
-                    ASSERT_EQ( "Science", testedObject->currentCategory() );
+                    ASSERT_EQ( "Science", testedObject->currentCategory( i ) );
                     break;
                 case 2:
-                    ASSERT_EQ( "Sports", testedObject->currentCategory() );
+                    ASSERT_EQ( "Sports", testedObject->currentCategory( i ) );
                     break;
                 case 3:
-                    ASSERT_EQ( "Rock", testedObject->currentCategory() );
+                    ASSERT_EQ( "Rock", testedObject->currentCategory( i ) );
                     break;
             }
         }

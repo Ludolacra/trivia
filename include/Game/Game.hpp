@@ -40,7 +40,7 @@ private:
     bool isGettingOutOfPenaltyBox;
 
     void askQuestion();
-    std::string currentCategory();
+    std::string currentCategory( const unsigned short location );
     bool didPlayerWin();
 };
 
