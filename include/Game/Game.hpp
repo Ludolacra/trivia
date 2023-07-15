@@ -1,10 +1,11 @@
 #ifndef GAME_HPP_
 #define GAME_HPP_
 
-#include <string>
 #include <list>
-#include <vector>
+#include <map>
 #include <memory>
+#include <string>
+#include <vector>
 
 #include "Abstract/QuestionFactory.hpp"
 #include "Generative/QuestionFactory.hpp"
@@ -26,16 +27,12 @@ public:
 
 private:
     std::vector<std::string> players;
+    std::map<Topic, std::list<std::string>> mQuestions;
 
     int places[6];
     int purses[6];
 
     bool inPenaltyBox[6];
-
-    std::list<std::string> popQuestions;
-    std::list<std::string> scienceQuestions;
-    std::list<std::string> sportsQuestions;
-    std::list<std::string> rockQuestions;
 
     unsigned int currentPlayer;
     bool isGettingOutOfPenaltyBox;
