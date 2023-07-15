@@ -71,7 +71,6 @@ void Game::roll( int roll )
     }
     else
     {
-
         places[currentPlayer] = places[currentPlayer] + roll;
         if( places[currentPlayer] > 11 )
             places[currentPlayer] = places[currentPlayer] - 12;

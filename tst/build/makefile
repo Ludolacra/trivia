@@ -66,6 +66,7 @@ $(LIB_UNDER_TEST): $(SRC_OBJS)
 	$(AR) $(ARFLAGS) $(LIB_UNDER_TEST) $^
 
 runTest: $(PROGRAM)
+	@rm -rf $(OUTPUT_FOLDER)/*.gcda
 	ASAN_OPTIONS=detect_leaks=1 ./$(PROGRAM)
 
 $(OUTPUT_FOLDER)/%.o: %.cpp
