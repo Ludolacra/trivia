@@ -60,7 +60,7 @@ all: runTest
 	@mkdir -p $(OUTPUT_FOLDER)
 
 $(PROGRAM): .outputFolder $(TST_OBJS) $(LIB_UNDER_TEST)
-	$(LD) $(TST_OBJS) $(LD_LIBRARIES) -o $(PROGRAM)
+	$(LD) $(TST_OBJS) $(LD_FLAGS) $(LD_LIBRARIES) -o $(PROGRAM)
 
 $(LIB_UNDER_TEST): $(SRC_OBJS)
 	$(AR) $(ARFLAGS) $(LIB_UNDER_TEST) $^
