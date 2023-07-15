@@ -185,4 +185,84 @@ namespace UT
         ASSERT_EQ( result, sampleQuestion + '\n' );
     }
 
+    TEST_F( GameTest, newPlayisInitialized )
+    {
+        testedObject = std::make_unique<Game>( questionFactoryMock );
+
+        testing::internal::CaptureStdout();
+        testedObject->add( "Bob" );
+        testing::internal::GetCapturedStdout();
+
+        ASSERT_EQ( testedObject->players.size(), 1u );
+        ASSERT_EQ( testedObject->places[0], 0 );
+        ASSERT_EQ( testedObject->purses[0], 0 );
+        ASSERT_EQ( testedObject->inPenaltyBox[0], false );
+    }
+
+    class GameTurnTest : public ::testing::Test
+    {
+    public:
+        std::shared_ptr<UT::Mock::QuestionFactory> questionFactoryMock;
+        std::unique_ptr<Game> testedObject;
+
+        void SetUp()
+        {
+            questionFactoryMock = std::make_shared<UT::Mock::QuestionFactory>();
+            EXPECT_CALL( *questionFactoryMock, generateQuestions )
+                .Times( 4 )
+                .WillRepeatedly(
+                    []( const Topic, const unsigned int ) -> std::list<std::string>
+                    {
+                        return { "dummy" };
+                    } );
+
+            testedObject = std::make_unique<Game>( questionFactoryMock );
+
+            testing::internal::CaptureStdout();
+            testedObject->add( "Bob" );
+            testing::internal::GetCapturedStdout();
+        }
+        void TearDown()
+        {
+            testedObject.reset();
+            questionFactoryMock.reset();
+        }
+    };
+
+    TEST_F( GameTurnTest, playerIsMovedByRollValueAndQuestionIsAsked )
+    {
+        testing::internal::CaptureStdout();
+        testedObject->roll( 1 );
+        testing::internal::GetCapturedStdout();
+
+        ASSERT_EQ( testedObject->places[0], 1 );
+        ASSERT_EQ( testedObject->purses[0], 0 );
+        ASSERT_EQ( testedObject->inPenaltyBox[0], false );
+    }
+
+    TEST_F( GameTurnTest, playerStaysInPenaltyOnEvenRoll )
+    {
+        testedObject->inPenaltyBox[0] = true;
+        testing::internal::CaptureStdout();
+        testedObject->roll( 2 );
+        testing::internal::GetCapturedStdout();
+
+        ASSERT_EQ( testedObject->places[0], 0 );
+        ASSERT_EQ( testedObject->purses[0], 0 );
+        ASSERT_EQ( testedObject->inPenaltyBox[0], true );
+        ASSERT_EQ( testedObject->isGettingOutOfPenaltyBox, false );
+    }
+
+    TEST_F( GameTurnTest, playerIsRemovedFromPenaltyAndHasRegularTurnOnOddRoll )
+    {
+        testedObject->inPenaltyBox[0] = true;
+        testing::internal::CaptureStdout();
+        testedObject->roll( 3 );
+        testing::internal::GetCapturedStdout();
+
+        ASSERT_EQ( testedObject->places[0], 3 );
+        ASSERT_EQ( testedObject->purses[0], 0 );
+        ASSERT_EQ( testedObject->inPenaltyBox[0], true );
+        ASSERT_EQ( testedObject->isGettingOutOfPenaltyBox, true );
+    }
 }
