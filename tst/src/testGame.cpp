@@ -11,27 +11,7 @@ using namespace testing;
 
 namespace UT
 {
-    class GameTest : public ::testing::Test
-    {
-    public:
-        std::shared_ptr<UT::Mock::QuestionFactory> questionFactoryMock;
-        std::unique_ptr<Game> testedObject;
-
-        void SetUp()
-        {
-            questionFactoryMock = std::make_shared<UT::Mock::QuestionFactory>();
-            EXPECT_CALL( *questionFactoryMock, generateQuestions ).Times( 4 );
-
-            testedObject = std::make_unique<Game>( questionFactoryMock );
-        }
-        void TearDown()
-        {
-            testedObject.reset();
-            questionFactoryMock.reset();
-        }
-    };
-
-    TEST( GameQuestionGenerationTest, qustionsAreGenerated )
+    TEST( GameQuestionGenerationTest, questionsAreGenerated )
     {
         auto questionFactoryMock = std::make_shared<UT::Mock::QuestionFactory>();
         EXPECT_CALL( *questionFactoryMock, generateQuestions( Topic::Pop, 50 ) );
@@ -42,8 +22,28 @@ namespace UT
         auto testedObject = std::make_unique<Game>( questionFactoryMock );
     }
 
+    class GameTest : public ::testing::Test
+    {
+    public:
+        std::shared_ptr<UT::Mock::QuestionFactory> questionFactoryMock;
+        std::unique_ptr<Game> testedObject;
+
+        void SetUp()
+        {
+            questionFactoryMock = std::make_shared<UT::Mock::QuestionFactory>();
+            EXPECT_CALL( *questionFactoryMock, generateQuestions ).Times( 4 );
+        }
+        void TearDown()
+        {
+            testedObject.reset();
+            questionFactoryMock.reset();
+        }
+    };
+
     TEST_F( GameTest, questionCategoryIsDeterminedBasedOnPlayerLocaion )
     {
+        testedObject = std::make_unique<Game>( questionFactoryMock );
+
         testing::internal::CaptureStdout();
         testedObject->add( "Bob" );
         testing::internal::GetCapturedStdout();
@@ -69,4 +69,125 @@ namespace UT
             }
         }
     }
+
+    TEST_F( GameTest, popQuestionIsAsked )
+    {
+        const std::string sampleQuestion = "This is a sample Pop question";
+        ON_CALL( *questionFactoryMock, generateQuestions )
+            .WillByDefault(
+                [sampleQuestion]( const Topic topic, const unsigned int ) -> std::list<std::string>
+                {
+                    if( topic == Topic::Pop )
+                    {
+
+                        return { sampleQuestion };
+                    }
+                    else
+                    {
+                        return {};
+                    }
+                } );
+        testedObject = std::make_unique<Game>( questionFactoryMock );
+
+        testing::internal::CaptureStdout();
+        testedObject->add( "Bob" );
+        testing::internal::GetCapturedStdout();
+        testedObject->places[testedObject->currentPlayer] = 0;
+
+        testing::internal::CaptureStdout();
+        testedObject->askQuestion();
+        const std::string result = testing::internal::GetCapturedStdout();
+        ASSERT_EQ( result, sampleQuestion + '\n' );
+    }
+
+    TEST_F( GameTest, ScienceQuestionIsAsked )
+    {
+        const std::string sampleQuestion = "This is a sample Science question";
+        ON_CALL( *questionFactoryMock, generateQuestions )
+            .WillByDefault(
+                [sampleQuestion]( const Topic topic, const unsigned int ) -> std::list<std::string>
+                {
+                    if( topic == Topic::Science )
+                    {
+
+                        return { sampleQuestion };
+                    }
+                    else
+                    {
+                        return {};
+                    }
+                } );
+        testedObject = std::make_unique<Game>( questionFactoryMock );
+
+        testing::internal::CaptureStdout();
+        testedObject->add( "Bob" );
+        testing::internal::GetCapturedStdout();
+        testedObject->places[testedObject->currentPlayer] = 1;
+
+        testing::internal::CaptureStdout();
+        testedObject->askQuestion();
+        const std::string result = testing::internal::GetCapturedStdout();
+        ASSERT_EQ( result, sampleQuestion + '\n' );
+    }
+
+    TEST_F( GameTest, SportsQuestionIsAsked )
+    {
+        const std::string sampleQuestion = "This is a sample Sports question";
+        ON_CALL( *questionFactoryMock, generateQuestions )
+            .WillByDefault(
+                [sampleQuestion]( const Topic topic, const unsigned int ) -> std::list<std::string>
+                {
+                    if( topic == Topic::Sports )
+                    {
+
+                        return { sampleQuestion };
+                    }
+                    else
+                    {
+                        return {};
+                    }
+                } );
+        testedObject = std::make_unique<Game>( questionFactoryMock );
+
+        testing::internal::CaptureStdout();
+        testedObject->add( "Bob" );
+        testing::internal::GetCapturedStdout();
+        testedObject->places[testedObject->currentPlayer] = 2;
+
+        testing::internal::CaptureStdout();
+        testedObject->askQuestion();
+        const std::string result = testing::internal::GetCapturedStdout();
+        ASSERT_EQ( result, sampleQuestion + '\n' );
+    }
+
+    TEST_F( GameTest, rockQuestionIsAsked )
+    {
+        const std::string sampleQuestion = "This is a sample Rock question";
+        ON_CALL( *questionFactoryMock, generateQuestions )
+            .WillByDefault(
+                [sampleQuestion]( const Topic topic, const unsigned int ) -> std::list<std::string>
+                {
+                    if( topic == Topic::Rock )
+                    {
+
+                        return { sampleQuestion };
+                    }
+                    else
+                    {
+                        return {};
+                    }
+                } );
+        testedObject = std::make_unique<Game>( questionFactoryMock );
+
+        testing::internal::CaptureStdout();
+        testedObject->add( "Bob" );
+        testing::internal::GetCapturedStdout();
+        testedObject->places[testedObject->currentPlayer] = 3;
+
+        testing::internal::CaptureStdout();
+        testedObject->askQuestion();
+        const std::string result = testing::internal::GetCapturedStdout();
+        ASSERT_EQ( result, sampleQuestion + '\n' );
+    }
+
 }
