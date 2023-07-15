@@ -16,9 +16,6 @@ namespace Generative
         ~QuestionFactory();
 
         virtual std::list<std::string> generateQuestions( const Topic topic, const unsigned int numberOfQuestions ) const override;
-
-    private:
-        constexpr std::string_view topicToString( const Topic topic ) const;
     };
 }
 
