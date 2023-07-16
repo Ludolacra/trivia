@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+#include "Abstract/Player.hpp"
 #include "Abstract/QuestionFactory.hpp"
 #include "Generative/QuestionFactory.hpp"
 #include "Game/Topic.hpp"
@@ -16,25 +17,22 @@ class Game
 public:
     Game( std::shared_ptr<Abstract::QuestionFactory> questionFactory = std::make_shared<Generative::QuestionFactory>() );
     ~Game();
-    bool isPlayable();
-    bool add( std::string playerName );
 
-    int howManyPlayers();
+    void addPlayer( std::shared_ptr<Abstract::Player> newPlayer );
+
+    bool isPlayable();
+
     void roll( int roll );
 
     bool wasCorrectlyAnswered();
     bool wrongAnswer();
 
 private:
-    std::vector<std::string> players;
+    std::vector<std::shared_ptr<Abstract::Player>> mPlayers;
+    std::vector<std::shared_ptr<Abstract::Player>>::iterator mCurrentPlayer;
     std::map<Topic, std::list<std::string>> mQuestions;
 
-    int places[6];
-    int purses[6];
-
-    bool inPenaltyBox[6];
-
-    unsigned int currentPlayer;
+    void setNextPlayer();
 
     void askQuestion();
     Topic currentCategory( const unsigned short location );

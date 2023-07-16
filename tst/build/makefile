@@ -70,7 +70,7 @@ runTest: $(PROGRAM)
 	ASAN_OPTIONS=detect_leaks=1 ./$(PROGRAM)
 
 $(OUTPUT_FOLDER)/%.o: %.cpp
-	$(CXX) $(CXX_FLAGS) $(INCLUDES) -c $^ -o $@
+	$(CXX) $(CXX_FLAGS) $(INCLUDES) $^ -o $@
 
 clean:
 	@rm -rf $(OUTPUT_FOLDER)/

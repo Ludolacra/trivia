@@ -4,7 +4,8 @@ CXX_FLAGS = \
     -O2 \
     -Wall \
     -Wextra \
-    -Werror
+    -Werror \
+    -c
 
 LD = g++
 LD_FLAGS = \

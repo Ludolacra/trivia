@@ -13,7 +13,7 @@ namespace UT
         class QuestionFactory : public ::Abstract::QuestionFactory
         {
         public:
-            MOCK_CONST_METHOD2( generateQuestions, std::list<std::string>( const Topic, const unsigned int ) );
+            MOCK_METHOD( std::list<std::string>, generateQuestions, (const Topic, const unsigned int), ( const, override ) );
         };
     }
 }

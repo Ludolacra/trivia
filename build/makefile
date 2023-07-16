@@ -40,7 +40,7 @@ tests:
 	gcovr --exclude '.*/tst/.*' --html-details coverage/index.html --print-summary --root ..
 
 $(OUTPUT_FOLDER)/%.o: %.cpp
-	$(CXX) $(CXX_FLAGS) $(INCLUDES) -c $^ -o $@
+	$(CXX) $(CXX_FLAGS) $(INCLUDES) $^ -o $@
 
 clean:
 	@rm -rf $(OUTPUT_FOLDER)/

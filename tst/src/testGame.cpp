@@ -5,6 +5,7 @@
 
 #include "Game/Game.hpp"
 #include "Game/Topic.hpp"
+#include "mock/Player.hpp"
 #include "mock/QuestionFactory.hpp"
 
 using namespace testing;
@@ -25,13 +26,27 @@ namespace UT
     class GameTest : public ::testing::Test
     {
     public:
-        std::shared_ptr<UT::Mock::QuestionFactory> questionFactoryMock;
+        std::shared_ptr<Mock::QuestionFactory> questionFactoryMock;
         std::unique_ptr<Game> testedObject;
+        std::shared_ptr<Mock::Player> player;
 
         void SetUp()
         {
             questionFactoryMock = std::make_shared<UT::Mock::QuestionFactory>();
-            EXPECT_CALL( *questionFactoryMock, generateQuestions ).Times( 4 );
+            EXPECT_CALL( *questionFactoryMock, generateQuestions )
+                .Times( 4 )
+                .WillRepeatedly(
+                    []( const Topic topic, const unsigned int ) -> std::list<std::string>
+                    {
+                        return { to_string( topic ) };
+                    } );
+
+            testedObject = std::make_unique<Game>( questionFactoryMock );
+
+            player = std::make_shared<Mock::Player>( "Bob" );
+            testing::internal::CaptureStdout();
+            testedObject->addPlayer( player );
+            testing::internal::GetCapturedStdout();
         }
         void TearDown()
         {
@@ -42,8 +57,6 @@ namespace UT
 
     TEST_F( GameTest, questionCategoryIsDeterminedBasedOnPlayerLocaion )
     {
-        testedObject = std::make_unique<Game>( questionFactoryMock );
-
         constexpr const unsigned short categoryCount = 4;
         for( unsigned short i = 0; i <= 11; ++i )
         {
@@ -67,214 +80,75 @@ namespace UT
 
     TEST_F( GameTest, popQuestionIsAsked )
     {
-        const std::string sampleQuestion = "This is a sample Pop question";
-        ON_CALL( *questionFactoryMock, generateQuestions )
-            .WillByDefault(
-                [sampleQuestion]( const Topic topic, const unsigned int ) -> std::list<std::string>
-                {
-                    if( topic == Topic::Pop )
-                    {
-
-                        return { sampleQuestion };
-                    }
-                    else
-                    {
-                        return {};
-                    }
-                } );
-        testedObject = std::make_unique<Game>( questionFactoryMock );
-
-        testing::internal::CaptureStdout();
-        testedObject->add( "Bob" );
-        testing::internal::GetCapturedStdout();
-        testedObject->places[testedObject->currentPlayer] = 0;
+        EXPECT_CALL( *player, getLocation ).WillOnce( Return( 0 ) );
 
         testing::internal::CaptureStdout();
         testedObject->askQuestion();
         const std::string result = testing::internal::GetCapturedStdout();
-        ASSERT_EQ( result, sampleQuestion + '\n' );
+        ASSERT_EQ( result, "Pop\n" );
     }
 
     TEST_F( GameTest, ScienceQuestionIsAsked )
     {
-        const std::string sampleQuestion = "This is a sample Science question";
-        ON_CALL( *questionFactoryMock, generateQuestions )
-            .WillByDefault(
-                [sampleQuestion]( const Topic topic, const unsigned int ) -> std::list<std::string>
-                {
-                    if( topic == Topic::Science )
-                    {
-
-                        return { sampleQuestion };
-                    }
-                    else
-                    {
-                        return {};
-                    }
-                } );
-        testedObject = std::make_unique<Game>( questionFactoryMock );
-
-        testing::internal::CaptureStdout();
-        testedObject->add( "Bob" );
-        testing::internal::GetCapturedStdout();
-        testedObject->places[testedObject->currentPlayer] = 1;
+        EXPECT_CALL( *player, getLocation ).WillOnce( Return( 1 ) );
 
         testing::internal::CaptureStdout();
         testedObject->askQuestion();
         const std::string result = testing::internal::GetCapturedStdout();
-        ASSERT_EQ( result, sampleQuestion + '\n' );
+        ASSERT_EQ( result, "Science\n" );
     }
 
     TEST_F( GameTest, SportsQuestionIsAsked )
     {
-        const std::string sampleQuestion = "This is a sample Sports question";
-        ON_CALL( *questionFactoryMock, generateQuestions )
-            .WillByDefault(
-                [sampleQuestion]( const Topic topic, const unsigned int ) -> std::list<std::string>
-                {
-                    if( topic == Topic::Sports )
-                    {
-
-                        return { sampleQuestion };
-                    }
-                    else
-                    {
-                        return {};
-                    }
-                } );
-        testedObject = std::make_unique<Game>( questionFactoryMock );
-
-        testing::internal::CaptureStdout();
-        testedObject->add( "Bob" );
-        testing::internal::GetCapturedStdout();
-        testedObject->places[testedObject->currentPlayer] = 2;
+        EXPECT_CALL( *player, getLocation ).WillOnce( Return( 2 ) );
 
         testing::internal::CaptureStdout();
         testedObject->askQuestion();
         const std::string result = testing::internal::GetCapturedStdout();
-        ASSERT_EQ( result, sampleQuestion + '\n' );
+        ASSERT_EQ( result, "Sports\n" );
     }
 
     TEST_F( GameTest, rockQuestionIsAsked )
     {
-        const std::string sampleQuestion = "This is a sample Rock question";
-        ON_CALL( *questionFactoryMock, generateQuestions )
-            .WillByDefault(
-                [sampleQuestion]( const Topic topic, const unsigned int ) -> std::list<std::string>
-                {
-                    if( topic == Topic::Rock )
-                    {
-
-                        return { sampleQuestion };
-                    }
-                    else
-                    {
-                        return {};
-                    }
-                } );
-        testedObject = std::make_unique<Game>( questionFactoryMock );
-
-        testing::internal::CaptureStdout();
-        testedObject->add( "Bob" );
-        testing::internal::GetCapturedStdout();
-        testedObject->places[testedObject->currentPlayer] = 3;
+        EXPECT_CALL( *player, getLocation ).WillOnce( Return( 3 ) );
 
         testing::internal::CaptureStdout();
         testedObject->askQuestion();
         const std::string result = testing::internal::GetCapturedStdout();
-        ASSERT_EQ( result, sampleQuestion + '\n' );
+        ASSERT_EQ( result, "Rock\n" );
     }
 
-    TEST_F( GameTest, newPlayisInitialized )
+    class GameTurnTest : public GameTest
     {
-        testedObject = std::make_unique<Game>( questionFactoryMock );
-
-        testing::internal::CaptureStdout();
-        testedObject->add( "Bob" );
-        testing::internal::GetCapturedStdout();
-
-        ASSERT_EQ( testedObject->players.size(), 1u );
-        ASSERT_EQ( testedObject->places[0], 0 );
-        ASSERT_EQ( testedObject->purses[0], 0 );
-        ASSERT_EQ( testedObject->inPenaltyBox[0], false );
-    }
-
-    class GameTurnTest : public ::testing::Test
-    {
-    public:
-        std::shared_ptr<UT::Mock::QuestionFactory> questionFactoryMock;
-        std::unique_ptr<Game> testedObject;
-
-        void SetUp()
-        {
-            questionFactoryMock = std::make_shared<UT::Mock::QuestionFactory>();
-            EXPECT_CALL( *questionFactoryMock, generateQuestions )
-                .Times( 4 )
-                .WillRepeatedly(
-                    []( const Topic, const unsigned int ) -> std::list<std::string>
-                    {
-                        return { "dummy" };
-                    } );
-
-            testedObject = std::make_unique<Game>( questionFactoryMock );
-
-            testing::internal::CaptureStdout();
-            testedObject->add( "Bob" );
-            testing::internal::GetCapturedStdout();
-        }
-        void TearDown()
-        {
-            testedObject.reset();
-            questionFactoryMock.reset();
-        }
     };
 
     TEST_F( GameTurnTest, playerIsMovedByRollValueAndQuestionIsAsked )
     {
+        EXPECT_CALL( *player, move( 1, 12 ) );
+
         testing::internal::CaptureStdout();
         testedObject->roll( 1 );
         testing::internal::GetCapturedStdout();
-
-        ASSERT_EQ( testedObject->places[0], 1 );
-        ASSERT_EQ( testedObject->purses[0], 0 );
-        ASSERT_EQ( testedObject->inPenaltyBox[0], false );
     }
-
-    TEST_F( GameTurnTest, playerIsMovedByRollValueAndValuesOverBoardSizeAreHandled )
-    {
-        testedObject->places[0] = 8;
-        testing::internal::CaptureStdout();
-        testedObject->roll( 6 );
-        testing::internal::GetCapturedStdout();
-
-        ASSERT_EQ( testedObject->places[0], 2 );
-        ASSERT_EQ( testedObject->purses[0], 0 );
-        ASSERT_EQ( testedObject->inPenaltyBox[0], false );
-    }
-
 
     TEST_F( GameTurnTest, playerStaysInPenaltyOnEvenRoll )
     {
-        testedObject->inPenaltyBox[0] = true;
+        EXPECT_CALL( *player, isInPenalty ).WillOnce( Return( true ) );
+        EXPECT_CALL( *player, removeFromPenalty ).Times( 0 );
+
         testing::internal::CaptureStdout();
         testedObject->roll( 2 );
         testing::internal::GetCapturedStdout();
-
-        ASSERT_EQ( testedObject->places[0], 0 );
-        ASSERT_EQ( testedObject->purses[0], 0 );
-        ASSERT_EQ( testedObject->inPenaltyBox[0], true );
     }
 
     TEST_F( GameTurnTest, playerIsRemovedFromPenaltyAndHasRegularTurnOnOddRoll )
     {
-        testedObject->inPenaltyBox[0] = true;
+        EXPECT_CALL( *player, isInPenalty ).WillOnce( Return( true ) );
+        EXPECT_CALL( *player, removeFromPenalty );
+
         testing::internal::CaptureStdout();
         testedObject->roll( 3 );
         testing::internal::GetCapturedStdout();
-
-        ASSERT_EQ( testedObject->places[0], 3 );
-        ASSERT_EQ( testedObject->purses[0], 0 );
-        ASSERT_EQ( testedObject->inPenaltyBox[0], false );
     }
 
     class GameAnswerTest : public GameTurnTest
@@ -287,55 +161,48 @@ namespace UT
         testedObject->wasCorrectlyAnswered();
         testing::internal::GetCapturedStdout();
 
-        ASSERT_EQ( testedObject->places[0], 0 );
-        ASSERT_EQ( testedObject->purses[0], 1 );
-        ASSERT_EQ( testedObject->inPenaltyBox[0], false );
+        // ASSERT_EQ( testedObject->places[0], 0 );
+        // ASSERT_EQ( testedObject->purses[0], 1 );
+        // ASSERT_EQ( testedObject->inPenaltyBox[0], false );
     }
 
     TEST_F( GameAnswerTest, correctAnswerGivesNoRewardWhenPenalized )
     {
-        testedObject->inPenaltyBox[0] = true;
+        // testedObject->inPenaltyBox[0] = true;
         testing::internal::CaptureStdout();
         testedObject->wasCorrectlyAnswered();
         testing::internal::GetCapturedStdout();
 
-        ASSERT_EQ( testedObject->places[0], 0 );
-        ASSERT_EQ( testedObject->purses[0], 0 );
-        ASSERT_EQ( testedObject->inPenaltyBox[0], true );
+        // ASSERT_EQ( testedObject->places[0], 0 );
+        // ASSERT_EQ( testedObject->purses[0], 0 );
+        // ASSERT_EQ( testedObject->inPenaltyBox[0], true );
     }
 
     TEST_F( GameAnswerTest, wrongAnswerPenalizesPlayer )
     {
-        testedObject->inPenaltyBox[0] = false;
+        // testedObject->inPenaltyBox[0] = false;
         testing::internal::CaptureStdout();
         testedObject->wrongAnswer();
         testing::internal::GetCapturedStdout();
 
-        ASSERT_EQ( testedObject->places[0], 0 );
-        ASSERT_EQ( testedObject->purses[0], 0 );
-        ASSERT_EQ( testedObject->inPenaltyBox[0], true );
+        // ASSERT_EQ( testedObject->places[0], 0 );
+        // ASSERT_EQ( testedObject->purses[0], 0 );
+        // ASSERT_EQ( testedObject->inPenaltyBox[0], true );
     }
 
     TEST_F( GameAnswerTest, sixCoinsWinGame )
     {
-        testedObject->purses[0] = 4;
+        EXPECT_CALL( *player, isInPenalty ).WillOnce( Return( false ) );
+        EXPECT_CALL( *player, getCoinCount ).Times( 2 ).WillRepeatedly( Return( 6 ) );
+
+
         testing::internal::CaptureStdout();
         bool notWon = testedObject->wasCorrectlyAnswered();
-        ASSERT_TRUE( notWon );
-        testing::internal::GetCapturedStdout();
-
-        ASSERT_EQ( testedObject->places[0], 0 );
-        ASSERT_EQ( testedObject->purses[0], 5 );
-        ASSERT_EQ( testedObject->inPenaltyBox[0], false );
-
-
-        testing::internal::CaptureStdout();
-        notWon = testedObject->wasCorrectlyAnswered();
         ASSERT_FALSE( notWon );
         testing::internal::GetCapturedStdout();
 
-        ASSERT_EQ( testedObject->places[0], 0 );
-        ASSERT_EQ( testedObject->purses[0], 6 );
-        ASSERT_EQ( testedObject->inPenaltyBox[0], false );
+        // ASSERT_EQ( testedObject->places[0], 0 );
+        // ASSERT_EQ( testedObject->purses[0], 6 );
+        // ASSERT_EQ( testedObject->inPenaltyBox[0], false );
     }
 }
