@@ -3,10 +3,13 @@
 
 #include <memory>
 
-#include "Game/Game.hpp"
-#include "Game/Topic.hpp"
 #include "mock/Player.hpp"
 #include "mock/QuestionFactory.hpp"
+
+// Ugly, but we can easily test private members this way
+#define private public
+#include "Game/Game.hpp"
+#include "Game/Topic.hpp"
 
 using namespace testing;
 

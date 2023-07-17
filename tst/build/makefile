@@ -2,15 +2,9 @@
 include ../../build/config.mk
 
 CXX_FLAGS += \
-	-c \
 	-g \
 	$(if $(filter 1, $(SANITIZERS)),-fsanitize=address -fsanitize=undefined,)\
 	$(if $(filter 1, $(COVERAGE)),--coverage,)
-
-# Ugly, but we can easily test private members this way
-CXX_FLAGS += \
-    -Dprivate=public
-
 
 OUTPUT_FOLDER = out
 LIB_UNDER_TEST = $(OUTPUT_FOLDER)/libUT_trivia.a
@@ -19,7 +13,8 @@ PROGRAM = $(OUTPUT_FOLDER)/trivia_tests
 INCLUDES = \
     -I $(realpath ../..)/include \
     -I $(realpath ..)/include \
-    -I /opt/homebrew/include
+    -I /opt/homebrew/include \
+    -I /usr/include
 
 SRC_DIR = \
 	$(realpath ../..)/src
@@ -32,6 +27,7 @@ vpath %.cpp $(TST_DIR)
 
 LD_LIBRARIES += \
     -L/opt/homebrew/lib/ \
+    -L/usr/lib/x86_64-linux-gnu \
     -lgmock -lgtest \
     -L$(OUTPUT_FOLDER) -lUT_trivia
 

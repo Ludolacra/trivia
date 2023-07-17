@@ -1,6 +1,8 @@
 #ifndef TOPIC_HPP_
 #define TOPIC_HPP_
 
+#include <stdexcept>
+
 enum class Topic
 {
     Pop = 0,
