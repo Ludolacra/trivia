@@ -8,8 +8,8 @@ namespace Random
     class Player : public ::Abstract::Player
     {
     public:
-        Player( const std::string& name );
-        ~Player();
+        explicit Player( const std::string& name );
+        ~Player() override;
 
         bool answer( const std::string& question ) const override;
     };

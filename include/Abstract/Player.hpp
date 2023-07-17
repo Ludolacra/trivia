@@ -8,7 +8,7 @@ namespace Abstract
     class Player
     {
     public:
-        Player( const std::string& name );
+        explicit Player( const std::string& name );
         virtual ~Player();
 
         inline const std::string& getName() const

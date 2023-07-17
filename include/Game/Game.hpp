@@ -15,28 +15,35 @@
 class Game
 {
 public:
-    Game( std::shared_ptr<Abstract::QuestionFactory> questionFactory = std::make_shared<Generative::QuestionFactory>() );
+    explicit Game( std::shared_ptr<Abstract::QuestionFactory> questionFactory = std::make_shared<Generative::QuestionFactory>() );
     ~Game();
 
     void addPlayer( std::shared_ptr<Abstract::Player> newPlayer );
-
-    bool isPlayable();
-
-    void roll( int roll );
-
-    bool wasCorrectlyAnswered();
-    bool wrongAnswer();
+    void play();
 
 private:
     std::vector<std::shared_ptr<Abstract::Player>> mPlayers;
-    std::vector<std::shared_ptr<Abstract::Player>>::iterator mCurrentPlayer;
     std::map<Topic, std::list<std::string>> mQuestions;
 
-    void setNextPlayer();
+    inline bool isPlayable() const
+    {
+        return mPlayers.size() >= 2;
+    }
 
-    void askQuestion();
-    Topic currentCategory( const unsigned short location );
-    bool didPlayerWin();
+    inline bool hasPlayerCollectedEnoughCoins( std::shared_ptr<Abstract::Player>& currentPlayer )
+    {
+        return currentPlayer->getCoinCount() == 6;
+    }
+
+    void handlePlayerTurn( std::shared_ptr<Abstract::Player>& currentPlayer );
+    bool handlePenalty( std::shared_ptr<Abstract::Player>& currentPlayer, unsigned short lastRoll );
+    void askQuestion( std::shared_ptr<Abstract::Player>& currentPlayer );
+    void handleCorrectAnswer( std::shared_ptr<Abstract::Player>& currentPlayer );
+    void handleIncorrectAnswer( std::shared_ptr<Abstract::Player>& currentPlayer );
+
+    std::string getNextQuestion( const Topic topic );
+
+    Topic getCurrentCategory( const unsigned short location );
 };
 
 #endif /* GAME_HPP_ */

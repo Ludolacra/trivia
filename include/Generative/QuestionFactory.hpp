@@ -13,7 +13,7 @@ namespace Generative
     {
     public:
         QuestionFactory();
-        ~QuestionFactory();
+        ~QuestionFactory() override;
 
         virtual std::list<std::string> generateQuestions( const Topic topic, const unsigned int numberOfQuestions ) const override;
     };

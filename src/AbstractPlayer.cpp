@@ -1,6 +1,8 @@
 #include "Abstract/Player.hpp"
 
 #include <cstdlib>
+#include <ctime>
+
 
 namespace Abstract
 {
@@ -10,6 +12,7 @@ namespace Abstract
         mBoardLocation( 0 ),
         mIsPenalized( false )
     {
+        std::srand( std::time( nullptr ) );
     }
 
     Player::~Player()
