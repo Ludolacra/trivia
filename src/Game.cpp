@@ -22,10 +22,8 @@ void Game::addPlayer( std::shared_ptr<Abstract::Player> newPlayer )
 {
     mPlayers.push_back( newPlayer );
 
-    std::cout << mPlayers.back()->getName() << " was added\n";
-    std::cout << "They are player number " << mPlayers.size() << "\n";
-
-    std::cout << std::flush;
+    std::cout << mPlayers.back()->getName() << " was added" << std::endl;
+    std::cout << "They are player number " << mPlayers.size() << std::endl;
 }
 
 void Game::play()
@@ -37,15 +35,13 @@ void Game::play()
 
     for( bool gameIsFinished = false; !gameIsFinished; )
     {
-        for( auto& currentPlayer : mPlayers )
+        for( auto playerIterator = mPlayers.begin();
+             !gameIsFinished && playerIterator != mPlayers.end();
+             ++playerIterator )
         {
-            handlePlayerTurn( currentPlayer );
+            handlePlayerTurn( *playerIterator );
 
-            gameIsFinished = hasPlayerCollectedEnoughCoins( currentPlayer );
-            if( gameIsFinished )
-            {
-                break;
-            }
+            gameIsFinished = hasPlayerCollectedEnoughCoins( *playerIterator );
         }
     }
 }
