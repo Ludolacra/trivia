@@ -1,6 +1,7 @@
 ﻿#include "Game/Game.hpp"
 
 #include <iostream>
+#include <Utility/Logger.hpp>
 
 Game::Game( std::shared_ptr<Abstract::QuestionFactory> questionFactory ) :
     mPlayers(),
@@ -22,8 +23,8 @@ void Game::addPlayer( std::shared_ptr<Abstract::Player> newPlayer )
 {
     mPlayers.push_back( newPlayer );
 
-    std::cout << mPlayers.back()->getName() << " was added" << std::endl;
-    std::cout << "They are player number " << mPlayers.size() << std::endl;
+    INFO( "%s was added", mPlayers.back()->getName().c_str() );
+    INFO( "They are player number %d", mPlayers.size() );
 }
 
 void Game::play()
@@ -48,10 +49,10 @@ void Game::play()
 
 void Game::handlePlayerTurn( std::shared_ptr<Abstract::Player>& currentPlayer )
 {
-    std::cout << currentPlayer->getName() << " is the current player" << std::endl;
+    INFO( "%s is the current player", currentPlayer->getName().c_str() );
 
     const unsigned short roll = currentPlayer->rollDice();
-    std::cout << "They have rolled a " << roll << std::endl;
+    INFO( "They have rolled a %d", roll );
 
     const bool playerSkipsTurn = handlePenalty( currentPlayer, roll );
     if( playerSkipsTurn )
@@ -60,7 +61,7 @@ void Game::handlePlayerTurn( std::shared_ptr<Abstract::Player>& currentPlayer )
     }
 
     currentPlayer->move( roll );
-    std::cout << currentPlayer->getName() << "'s new location is " << currentPlayer->getLocation() << std::endl;
+    INFO( "%s's new location is %d", currentPlayer->getName().c_str(), currentPlayer->getLocation() );
 
     askQuestion( currentPlayer );
     const bool correctAnswer = currentPlayer->answer( "question" );
@@ -83,11 +84,11 @@ bool Game::handlePenalty( std::shared_ptr<Abstract::Player>& currentPlayer, unsi
 
     if( lastRoll % 2 == 0 )
     {
-        std::cout << currentPlayer->getName() << " is not getting out of the penalty box" << std::endl;
+        INFO( "%s is not getting out of the penalty box", currentPlayer->getName().c_str() );
         return true;
     }
 
-    std::cout << currentPlayer->getName() << " is getting out of the penalty box" << std::endl;
+    INFO( "%s is getting out of the penalty box", currentPlayer->getName().c_str() );
     currentPlayer->removeFromPenalty();
 
     return false;
@@ -96,9 +97,9 @@ bool Game::handlePenalty( std::shared_ptr<Abstract::Player>& currentPlayer, unsi
 void Game::askQuestion( std::shared_ptr<Abstract::Player>& currentPlayer )
 {
     const Topic currentTopic = getCurrentCategory( currentPlayer->getLocation() );
-    std::cout << "The category is " << to_string( currentTopic ) << std::endl;
+    INFO( "The category is %s", to_string( currentTopic ).c_str() );
     const std::string question = getNextQuestion( currentTopic );
-    std::cout << question << std::endl;
+    INFO( question.c_str() );
 }
 
 void Game::handleCorrectAnswer( std::shared_ptr<Abstract::Player>& currentPlayer )
@@ -108,16 +109,16 @@ void Game::handleCorrectAnswer( std::shared_ptr<Abstract::Player>& currentPlayer
         return;
     }
 
-    std::cout << "Answer was correct!!!!" << std::endl;
+    INFO( "Answer was correct!!!!" );
     currentPlayer->receiveReward();
-    std::cout << currentPlayer->getName() << " now has " << currentPlayer->getCoinCount() << " Gold Coins." << std::endl;
+    INFO( "%s now has %d Gold Coins.", currentPlayer->getName().c_str(), currentPlayer->getCoinCount() );
 }
 
 void Game::handleIncorrectAnswer( std::shared_ptr<Abstract::Player>& currentPlayer )
 {
-    std::cout << "Question was incorrectly answered" << std::endl;
-    std::cout << currentPlayer->getName() << " was sent to the penalty box" << std::endl;
+    INFO( "Question was incorrectly answered" );
     currentPlayer->moveToPenalty();
+    INFO( "%s was sent to the penalty box", currentPlayer->getName().c_str() );
 }
 
 std::string Game::getNextQuestion( const Topic topic )

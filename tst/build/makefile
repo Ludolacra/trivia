@@ -22,8 +22,12 @@ SRC_DIR = \
 TST_DIR = \
 	$(realpath ..)/src
 
+MOCK_DIR = \
+	$(realpath ..)/mock_src
+
 vpath %.cpp $(SRC_DIR)
 vpath %.cpp $(TST_DIR)
+vpath %.cpp $(MOCK_DIR)
 
 LD_LIBRARIES += \
     -L/opt/homebrew/lib/ \
@@ -47,6 +51,12 @@ SRC_FILES = \
 SRC_OBJS = \
     $(subst $(SRC_DIR)/,$(OUTPUT_FOLDER)/,$(SRC_FILES:.cpp=.o))
 
+MOCK_FILES = \
+	$(wildcard $(MOCK_DIR)/*.cpp)
+
+MOCK_OBJS = \
+    $(subst $(MOCK_DIR)/,$(OUTPUT_FOLDER)/,$(MOCK_FILES:.cpp=.o))
+
 .PHONY: .outputFolder clean runTest
 .INTERMEDIATE: .outputFolder
 
@@ -55,8 +65,8 @@ all: runTest
 .outputFolder:
 	@mkdir -p $(OUTPUT_FOLDER)
 
-$(PROGRAM): .outputFolder $(TST_OBJS) $(LIB_UNDER_TEST)
-	$(LD) $(TST_OBJS) $(LD_FLAGS) $(LD_LIBRARIES) -o $(PROGRAM)
+$(PROGRAM): .outputFolder $(TST_OBJS) $(MOCK_OBJS) $(LIB_UNDER_TEST)
+	$(LD) $(TST_OBJS) $(MOCK_OBJS) $(LD_FLAGS) $(LD_LIBRARIES) -o $(PROGRAM)
 
 $(LIB_UNDER_TEST): $(SRC_OBJS)
 	$(AR) $(ARFLAGS) $(LIB_UNDER_TEST) $^

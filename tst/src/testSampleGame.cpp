@@ -3,6 +3,7 @@
 
 #include "Abstract/Player.hpp"
 #include "Game/Game.hpp"
+#include "Utility/Logger.hpp"
 
 using namespace testing;
 
@@ -94,6 +95,8 @@ namespace UT
         EXPECT_CALL( *unluckyPlayer, rollDice ).Times( 5 ).WillRepeatedly( Return( 2 ) );
         EXPECT_CALL( *unluckyPlayer, answer ).WillOnce( Return( false ) );
 
+        Utility::Logger::Init( std::make_unique<Utility::CoutLogger>() );
+        Utility::Logger::SetLogLvl( Utility::Logger::Level::Info );
         Game sampleGame;
 
         testing::internal::CaptureStdout();
@@ -101,6 +104,7 @@ namespace UT
         sampleGame.addPlayer( unluckyPlayer );
         sampleGame.play();
         const std::string result = testing::internal::GetCapturedStdout();
+        Utility::Logger::Destroy();
 
         ASSERT_EQ( result, sampleGameOutput );
     }
