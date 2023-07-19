@@ -2,15 +2,8 @@
 
 namespace Generative
 {
-    QuestionFactory::QuestionFactory()
-    {
-    }
-
-    QuestionFactory::~QuestionFactory()
-    {
-    }
-
-    std::list<std::string> QuestionFactory::generateQuestions( const Topic topic, const unsigned int numberOfQuestions ) const
+    std::list<std::string> QuestionFactory::generateQuestions( const Topic topic,
+                                                               const unsigned int numberOfQuestions ) const
     {
         std::list<std::string> result;
         for( unsigned int i = 0; i < numberOfQuestions; ++i )

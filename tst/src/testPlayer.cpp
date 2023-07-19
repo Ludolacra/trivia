@@ -17,7 +17,6 @@ namespace UT
         {
         }
 
-
         MOCK_METHOD( bool, answer, (const std::string&), ( const, override ) );
     };
 

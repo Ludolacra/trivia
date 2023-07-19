@@ -12,13 +12,10 @@ namespace Random
         std::srand( std::time( nullptr ) );
     }
 
-    Player::~Player()
-    {
-    }
-
     bool Player::answer( const std::string& question ) const
     {
         (void)question;
+        // The randomly answering player basically has 10% chance to incorrectly answer
         return std::rand() % 9 != 7;
     }
 }

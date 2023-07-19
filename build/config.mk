@@ -5,7 +5,8 @@ CXX_FLAGS = \
     -Wall \
     -Wextra \
     -Werror \
-    -c
+    -c \
+    -pedantic
 
 LD = g++
 LD_FLAGS = \

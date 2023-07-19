@@ -6,6 +6,8 @@ CXX_FLAGS += \
 	$(if $(filter 1, $(SANITIZERS)),-fsanitize=address -fsanitize=undefined,)\
 	$(if $(filter 1, $(COVERAGE)),--coverage,)
 
+CXX_FLAGS := $(filter-out -pedantic,$(CXX_FLAGS))
+
 OUTPUT_FOLDER = out
 LIB_UNDER_TEST = $(OUTPUT_FOLDER)/libUT_trivia.a
 PROGRAM = $(OUTPUT_FOLDER)/trivia_tests

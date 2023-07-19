@@ -1,7 +1,12 @@
 ﻿#include "Game/Game.hpp"
 
 #include <iostream>
-#include <Utility/Logger.hpp>
+#include <stdexcept>
+
+#include "Utility/Logger.hpp"
+
+unsigned short Game::msMinimumPlayerCount   = 2;
+unsigned short Game::msConisNeededToWinGame = 6;
 
 Game::Game( std::shared_ptr<Abstract::QuestionFactory> questionFactory ) :
     mPlayers(),
@@ -13,10 +18,6 @@ Game::Game( std::shared_ptr<Abstract::QuestionFactory> questionFactory ) :
     {
         mQuestions[topic] = questionFactory->generateQuestions( topic, questionsPerTopic );
     }
-}
-
-Game::~Game()
-{
 }
 
 void Game::addPlayer( std::shared_ptr<Abstract::Player> newPlayer )
@@ -31,31 +32,30 @@ void Game::play()
 {
     if( !isPlayable() )
     {
+        ERROR( "Game is not playable with current player count(%d). At least %d players are needed.",
+               mPlayers.size(), msMinimumPlayerCount );
         return;
     }
 
-    for( bool gameIsFinished = false; !gameIsFinished; )
+    for( bool gameIsWon = false; !gameIsWon; )
     {
-        for( auto playerIterator = mPlayers.begin();
-             !gameIsFinished && playerIterator != mPlayers.end();
-             ++playerIterator )
+        for( auto playerIterator = mPlayers.begin(); !gameIsWon && playerIterator != mPlayers.end(); ++playerIterator )
         {
             handlePlayerTurn( *playerIterator );
 
-            gameIsFinished = hasPlayerCollectedEnoughCoins( *playerIterator );
+            gameIsWon = hasPlayerCollectedEnoughCoins( ( *playerIterator )->getCoinCount() );
         }
     }
 }
 
-void Game::handlePlayerTurn( std::shared_ptr<Abstract::Player>& currentPlayer )
+void Game::handlePlayerTurn( std::shared_ptr<Abstract::Player> currentPlayer )
 {
     INFO( "%s is the current player", currentPlayer->getName().c_str() );
 
     const unsigned short roll = currentPlayer->rollDice();
     INFO( "They have rolled a %d", roll );
 
-    const bool playerSkipsTurn = handlePenalty( currentPlayer, roll );
-    if( playerSkipsTurn )
+    if( playerMustSkipTurn( currentPlayer, roll ) )
     {
         return;
     }
@@ -63,8 +63,10 @@ void Game::handlePlayerTurn( std::shared_ptr<Abstract::Player>& currentPlayer )
     currentPlayer->move( roll );
     INFO( "%s's new location is %d", currentPlayer->getName().c_str(), currentPlayer->getLocation() );
 
-    askQuestion( currentPlayer );
-    const bool correctAnswer = currentPlayer->answer( "question" );
+    const std::string question = getNextQuestion( currentPlayer->getLocation() );
+    INFO( question.c_str() );
+
+    const bool correctAnswer = currentPlayer->answer( question );
     if( correctAnswer )
     {
         handleCorrectAnswer( currentPlayer );
@@ -75,8 +77,10 @@ void Game::handlePlayerTurn( std::shared_ptr<Abstract::Player>& currentPlayer )
     }
 }
 
-bool Game::handlePenalty( std::shared_ptr<Abstract::Player>& currentPlayer, unsigned short lastRoll )
+bool Game::playerMustSkipTurn( std::shared_ptr<Abstract::Player> currentPlayer, unsigned short lastRoll )
 {
+    // These two statements are intentionally not combined
+    // removeFromPenalty is preferred to be not called when not necessary
     if( !currentPlayer->isInPenalty() )
     {
         return false;
@@ -94,15 +98,7 @@ bool Game::handlePenalty( std::shared_ptr<Abstract::Player>& currentPlayer, unsi
     return false;
 }
 
-void Game::askQuestion( std::shared_ptr<Abstract::Player>& currentPlayer )
-{
-    const Topic currentTopic = getCurrentCategory( currentPlayer->getLocation() );
-    INFO( "The category is %s", to_string( currentTopic ).c_str() );
-    const std::string question = getNextQuestion( currentTopic );
-    INFO( question.c_str() );
-}
-
-void Game::handleCorrectAnswer( std::shared_ptr<Abstract::Player>& currentPlayer )
+void Game::handleCorrectAnswer( std::shared_ptr<Abstract::Player> currentPlayer )
 {
     if( currentPlayer->isInPenalty() )
     {
@@ -114,17 +110,21 @@ void Game::handleCorrectAnswer( std::shared_ptr<Abstract::Player>& currentPlayer
     INFO( "%s now has %d Gold Coins.", currentPlayer->getName().c_str(), currentPlayer->getCoinCount() );
 }
 
-void Game::handleIncorrectAnswer( std::shared_ptr<Abstract::Player>& currentPlayer )
+void Game::handleIncorrectAnswer( std::shared_ptr<Abstract::Player> currentPlayer )
 {
     INFO( "Question was incorrectly answered" );
     currentPlayer->moveToPenalty();
     INFO( "%s was sent to the penalty box", currentPlayer->getName().c_str() );
 }
 
-std::string Game::getNextQuestion( const Topic topic )
+std::string Game::getNextQuestion( const unsigned short playerLocation )
 {
-    std::string question = mQuestions.at( topic ).front();
-    mQuestions.at( topic ).pop_front();
+    const Topic currentTopic = getCurrentCategory( playerLocation );
+    INFO( "The category is %s", to_string( currentTopic ).c_str() );
+
+    std::string question = mQuestions.at( currentTopic ).front();
+    mQuestions.at( currentTopic ).pop_front();
+
     return question;
 }
 
@@ -135,6 +135,7 @@ Topic Game::getCurrentCategory( const unsigned short location )
         case 0: return Topic::Pop;
         case 1: return Topic::Science;
         case 2: return Topic::Sports;
-        default: return Topic::Rock;
+        case 3: return Topic::Rock;
+        default: throw std::runtime_error( "Impossible value found when determining current category!" );
     }
 }

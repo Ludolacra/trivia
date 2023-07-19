@@ -12,10 +12,11 @@ namespace Generative
     class QuestionFactory : public ::Abstract::QuestionFactory
     {
     public:
-        QuestionFactory();
-        ~QuestionFactory() override;
+        inline QuestionFactory()    = default;
+        ~QuestionFactory() override = default;
 
-        virtual std::list<std::string> generateQuestions( const Topic topic, const unsigned int numberOfQuestions ) const override;
+        virtual std::list<std::string> generateQuestions( const Topic topic,
+                                                          const unsigned int numberOfQuestions ) const override;
     };
 }
 

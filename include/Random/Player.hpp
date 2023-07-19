@@ -9,7 +9,7 @@ namespace Random
     {
     public:
         explicit Player( const std::string& name );
-        ~Player() override;
+        ~Player() override = default;
 
         bool answer( const std::string& question ) const override;
     };

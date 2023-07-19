@@ -5,6 +5,7 @@
 
 #include "mock/Player.hpp"
 #include "mock/QuestionFactory.hpp"
+#include <ut/Logger.hpp>
 
 // Ugly, but we can easily test private members this way
 #define private public
@@ -47,9 +48,7 @@ namespace UT
             testedObject = std::make_unique<Game>( questionFactoryMock );
 
             player = std::make_shared<Mock::Player>( "Bob" );
-            testing::internal::CaptureStdout();
             testedObject->addPlayer( player );
-            testing::internal::GetCapturedStdout();
         }
         void TearDown()
         {
@@ -60,7 +59,12 @@ namespace UT
 
     TEST_F( GameTest, gameIsNotPlayableInSolo )
     {
+        Utility::Logger::Init( std::make_unique<Logger>() );
         testedObject->play();
+
+        EXPECT_ERROR( "Game is not playable with current player count(1). At least 2 players are needed." );
+        EXPECT_NO_LOG();
+        Utility::Logger::Destroy();
     }
 
     TEST_F( GameTest, questionCategoryIsDeterminedBasedOnPlayerLocaion )
@@ -88,10 +92,15 @@ namespace UT
 
     TEST_F( GameTest, appropriateTopicQuestionIsAsked )
     {
-        ASSERT_EQ( testedObject->getNextQuestion( Topic::Pop ), "Pop" );
-        ASSERT_EQ( testedObject->getNextQuestion( Topic::Science ), "Science" );
-        ASSERT_EQ( testedObject->getNextQuestion( Topic::Sports ), "Sports" );
-        ASSERT_EQ( testedObject->getNextQuestion( Topic::Rock ), "Rock" );
+        const unsigned short popLocaltion     = 0;
+        const unsigned short scienceLocaltion = 1;
+        const unsigned short sportsLocaltion  = 2;
+        const unsigned short rockLocaltion    = 3;
+
+        ASSERT_EQ( testedObject->getNextQuestion( popLocaltion ), "Pop" );
+        ASSERT_EQ( testedObject->getNextQuestion( scienceLocaltion ), "Science" );
+        ASSERT_EQ( testedObject->getNextQuestion( sportsLocaltion ), "Sports" );
+        ASSERT_EQ( testedObject->getNextQuestion( rockLocaltion ), "Rock" );
     }
 
     class GameTurnTest : public GameTest
@@ -108,10 +117,8 @@ namespace UT
         EXPECT_CALL( *player, receiveReward );
         EXPECT_CALL( *player, getCoinCount ).WillOnce( Return( 1 ) );
 
-        testing::internal::CaptureStdout();
         auto abstractPlayer = std::static_pointer_cast<Abstract::Player>( player );
         testedObject->handlePlayerTurn( abstractPlayer );
-        testing::internal::GetCapturedStdout();
     }
 
     TEST_F( GameTurnTest, playerStaysInPenaltyOnEvenRoll )
@@ -124,10 +131,8 @@ namespace UT
         EXPECT_CALL( *player, receiveReward ).Times( 0 );
         EXPECT_CALL( *player, getCoinCount ).Times( 0 );
 
-        testing::internal::CaptureStdout();
         auto abstractPlayer = std::static_pointer_cast<Abstract::Player>( player );
         testedObject->handlePlayerTurn( abstractPlayer );
-        testing::internal::GetCapturedStdout();
     }
 
     TEST_F( GameTurnTest, playerIsRemovedFromPenaltyAndHasRegularTurnOnOddRoll )
@@ -141,10 +146,8 @@ namespace UT
         EXPECT_CALL( *player, receiveReward );
         EXPECT_CALL( *player, getCoinCount ).WillOnce( Return( 1 ) );
 
-        testing::internal::CaptureStdout();
         auto abstractPlayer = std::static_pointer_cast<Abstract::Player>( player );
         testedObject->handlePlayerTurn( abstractPlayer );
-        testing::internal::GetCapturedStdout();
     }
 
     class GameAnswerTest : public GameTurnTest
@@ -157,10 +160,8 @@ namespace UT
         EXPECT_CALL( *player, receiveReward );
         EXPECT_CALL( *player, getCoinCount ).WillOnce( Return( 1 ) );
 
-        testing::internal::CaptureStdout();
         auto abstractPlayer = std::static_pointer_cast<Abstract::Player>( player );
         testedObject->handleCorrectAnswer( abstractPlayer );
-        testing::internal::GetCapturedStdout();
     }
 
     TEST_F( GameAnswerTest, correctAnswerGivesNoRewardWhenPenalized )
@@ -169,29 +170,24 @@ namespace UT
         EXPECT_CALL( *player, receiveReward ).Times( 0 );
         EXPECT_CALL( *player, getCoinCount ).Times( 0 );
 
-        testing::internal::CaptureStdout();
         auto abstractPlayer = std::static_pointer_cast<Abstract::Player>( player );
         testedObject->handleCorrectAnswer( abstractPlayer );
-        testing::internal::GetCapturedStdout();
     }
 
     TEST_F( GameAnswerTest, wrongAnswerPenalizesPlayer )
     {
         EXPECT_CALL( *player, moveToPenalty );
 
-        testing::internal::CaptureStdout();
         auto abstractPlayer = std::static_pointer_cast<Abstract::Player>( player );
         testedObject->handleIncorrectAnswer( abstractPlayer );
-        testing::internal::GetCapturedStdout();
     }
 
     TEST_F( GameAnswerTest, sixCoinsWinGame )
     {
-        EXPECT_CALL( *player, getCoinCount ).WillOnce( Return( 6 ) );
+        EXPECT_CALL( *player, getCoinCount ).WillOnce( Return( 2 ) ).WillOnce( Return( 6 ) );
 
-        testing::internal::CaptureStdout();
         auto abstractPlayer = std::static_pointer_cast<Abstract::Player>( player );
-        testedObject->hasPlayerCollectedEnoughCoins( abstractPlayer );
-        testing::internal::GetCapturedStdout();
+        ASSERT_FALSE( testedObject->hasPlayerCollectedEnoughCoins( abstractPlayer->getCoinCount() ) );
+        ASSERT_TRUE( testedObject->hasPlayerCollectedEnoughCoins( abstractPlayer->getCoinCount() ) );
     }
 }

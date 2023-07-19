@@ -57,8 +57,13 @@ namespace Utility
         (void)function;
         (void)line;
 
-        vprintf( formatStr, args );
-        printf( "\n" );
+        FILE* destination = stdout;
+        if( loglvl >= Level::Error )
+        {
+            destination = stderr;
+        }
+        vfprintf( destination, formatStr, args );
+        fprintf( destination, "\n" );
     }
 
     void NullLogger::log( const Logger::Level loglvl, const char* file, const char* function, const int line,

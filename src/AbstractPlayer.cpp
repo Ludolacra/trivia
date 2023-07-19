@@ -15,14 +15,13 @@ namespace Abstract
         std::srand( std::time( nullptr ) );
     }
 
-    Player::~Player()
-    {
-    }
-
     void Player::move( unsigned int steps, unsigned int boardSize )
     {
         mBoardLocation += steps;
-        mBoardLocation %= boardSize;
+        if( mBoardLocation >= boardSize )
+        {
+            mBoardLocation %= boardSize;
+        }
     }
 
     unsigned int Player::getCoinCount() const

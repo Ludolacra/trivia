@@ -11,8 +11,8 @@ namespace Abstract
     class QuestionFactory
     {
     public:
-        QuestionFactory();
-        virtual ~QuestionFactory();
+        inline QuestionFactory()   = default;
+        virtual ~QuestionFactory() = default;
 
         virtual std::list<std::string> generateQuestions( const Topic topic, const unsigned int numberOfQuestions ) const = 0;
     };
