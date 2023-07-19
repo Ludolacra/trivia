@@ -111,7 +111,7 @@ namespace UT
     {
         EXPECT_CALL( *player, isInPenalty ).Times( 2 ).WillRepeatedly( Return( false ) );
         EXPECT_CALL( *player, rollDice ).WillOnce( Return( 1 ) );
-        EXPECT_CALL( *player, move( 1, _ ) );
+        EXPECT_CALL( *player, move( 1 ) );
         EXPECT_CALL( *player, getLocation ).Times( 2 ).WillRepeatedly( Return( 2 ) );
         EXPECT_CALL( *player, answer ).WillOnce( Return( true ) );
         EXPECT_CALL( *player, receiveReward );
@@ -140,7 +140,7 @@ namespace UT
         EXPECT_CALL( *player, isInPenalty ).Times( 2 ).WillOnce( Return( true ) ).WillOnce( Return( false ) );
         EXPECT_CALL( *player, rollDice ).WillOnce( Return( 3 ) );
         EXPECT_CALL( *player, removeFromPenalty );
-        EXPECT_CALL( *player, move( 3, _ ) );
+        EXPECT_CALL( *player, move( 3 ) );
         EXPECT_CALL( *player, getLocation ).Times( 2 ).WillRepeatedly( Return( 4 ) );
         EXPECT_CALL( *player, answer ).WillOnce( Return( true ) );
         EXPECT_CALL( *player, receiveReward );

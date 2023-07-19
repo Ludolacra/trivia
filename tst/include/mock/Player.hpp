@@ -17,7 +17,7 @@ namespace UT
             {
             }
 
-            MOCK_METHOD( void, move, (unsigned int, unsigned int), ( override ) );
+            MOCK_METHOD( void, move, (unsigned int), ( override ) );
             MOCK_METHOD( (unsigned int), getCoinCount, (), ( const, override ) );
             MOCK_METHOD( (unsigned int), getLocation, (), ( const, override ) );
 

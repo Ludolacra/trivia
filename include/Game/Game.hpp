@@ -15,6 +15,8 @@
 class Game
 {
 public:
+    static constexpr unsigned short BoardSize = 12;
+
     explicit Game( std::shared_ptr<Abstract::QuestionFactory> questionFactory =
                        std::make_shared<Generative::QuestionFactory>() );
     ~Game() = default;
@@ -23,8 +25,8 @@ public:
     void play();
 
 private:
-    static unsigned short msMinimumPlayerCount;
-    static unsigned short msConisNeededToWinGame;
+    static constexpr unsigned short msMinimumPlayerCount   = 2;
+    static constexpr unsigned short msConisNeededToWinGame = 6;
 
     std::vector<std::shared_ptr<Abstract::Player>> mPlayers;
     std::map<Topic, std::list<std::string>> mQuestions;

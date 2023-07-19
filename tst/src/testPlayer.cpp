@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "Abstract/Player.hpp"
+#include "Game/Game.hpp"
 
 using namespace testing;
 
@@ -62,7 +63,7 @@ namespace UT
         Player testedPlayer( "" );
 
         ASSERT_EQ( 0u, testedPlayer.getLocation() );
-        testedPlayer.move( 5, 3 );
+        testedPlayer.move( Game::BoardSize + 2 );
         ASSERT_EQ( 2u, testedPlayer.getLocation() );
     }
 

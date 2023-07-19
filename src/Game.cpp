@@ -5,9 +5,6 @@
 
 #include "Utility/Logger.hpp"
 
-unsigned short Game::msMinimumPlayerCount   = 2;
-unsigned short Game::msConisNeededToWinGame = 6;
-
 Game::Game( std::shared_ptr<Abstract::QuestionFactory> questionFactory ) :
     mPlayers(),
     mQuestions()

@@ -3,6 +3,8 @@
 #include <cstdlib>
 #include <ctime>
 
+#include "Game/Game.hpp"
+
 
 namespace Abstract
 {
@@ -15,12 +17,12 @@ namespace Abstract
         std::srand( std::time( nullptr ) );
     }
 
-    void Player::move( unsigned int steps, unsigned int boardSize )
+    void Player::move( unsigned int steps )
     {
         mBoardLocation += steps;
-        if( mBoardLocation >= boardSize )
+        if( mBoardLocation >= Game::BoardSize )
         {
-            mBoardLocation %= boardSize;
+            mBoardLocation %= Game::BoardSize;
         }
     }
 

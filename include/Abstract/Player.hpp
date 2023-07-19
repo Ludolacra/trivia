@@ -16,7 +16,7 @@ namespace Abstract
             return mName;
         }
 
-        virtual void move( unsigned int steps, unsigned int boardSize = 12 );
+        virtual void move( unsigned int steps );
 
         virtual unsigned int getCoinCount() const;
         virtual unsigned int getLocation() const;
